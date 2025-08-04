@@ -1,1 +1,16 @@
+# Environment
 .env
+
+# Python
+__pycache__/
+*.pyc
+
+# Database
+data/*.db
+
+# IDE/editor stuff
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
