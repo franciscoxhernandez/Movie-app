@@ -32,6 +32,9 @@ def menu():
 def list_movies():
     """Prints the list of movies in the database"""
     movies = storage.list_movies()
+    if not movies:
+        print("No movies found in the database")
+        return
     print(f"{len(movies)} movies in total\n")
 
     for title, details in movies.items():
@@ -82,7 +85,7 @@ def update_movie():
         return
     movies = storage.list_movies()
     if user_update_movie in movies:
-        current_year = movies[user_update_movie]["Year"]
+        current_year = movies[user_update_movie]["year"]
         print(f"The current year of {user_update_movie} is {current_year}")
 
         while True:
@@ -99,7 +102,7 @@ def update_movie():
                 print("\033[91mInvalid input, please enter a valid year\033[0m")
         movies[user_update_movie]['rating'] = question_new_rating
         movies[user_update_movie]['year'] = question_new_year
-        storage.save_movies(movies)
+        storage.list_movies()
         print(f"Movie {user_update_movie} successfully updated")
     else:
         print(f"Movie {user_update_movie} doesn't exist")

@@ -1,0 +1,5 @@
+requests
+sqlalchemy
+python-dotenv
+matplotlib
+rapidfuzz
