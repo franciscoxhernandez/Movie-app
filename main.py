@@ -154,7 +154,7 @@ def search_movie():
         return
 
     for title in movies:
-        if user_search == title.lower():
+        if user_search in title.lower():
             details = movies[title]
             print(f"Exact match found: {title}: ({details['year']}): "
                   f"Rating {details['rating']}")
