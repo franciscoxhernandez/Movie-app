@@ -97,14 +97,16 @@ def delete_movie(title):
         else:
             print(f"Movie '{title}' not found.")
 
-def update_movie(title, new_year, new_rating):
-    """Update a movie's rating in the database."""
+def update_movie(title_to_update, new_rating, new_year):
+    """Update a movie's rating in the database, returns True if updated."""
     with engine.begin() as conn:
         result = conn.execute(text(
-            "UPDATE movies SET year = :year, rating = :rating WHERE title = :title"
-        ), {"title": title, "year": new_year, "rating": new_rating})
+            "UPDATE movies SET year = :year, rating = :rating WHERE lower(title) = lower(:title)"),
+            {"title": title_to_update.strip(), "year": int(new_year), "rating": float(new_rating)})
 
         if result.rowcount > 0:
-            print(f"Movie '{title}' updated successfully.")
+            print(f"Movie '{title_to_update}' updated successfully.")
+            return True
         else:
-            print(f"Movie '{title}' not found.")
+            print(f"Movie '{title_to_update}' not found.")
+            return False
