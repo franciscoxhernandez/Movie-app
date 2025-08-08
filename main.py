@@ -78,34 +78,51 @@ def delete_movie():
         print("Movie doesn't exist")
 
 def update_movie():
-    """ Update Movie Rating Histogram """
-    user_update_movie = (input("Enter movie name to be updated: "))
+    """ Update Movie rating and year in the database """
+
+    user_update_movie = (input("Enter movie name to be updated: ").strip())
     if not user_update_movie:
         print("\033[91mMovie name cannot be empty\033[0m")
         return
     movies = storage.list_movies()
+    title_to_update = None
     if user_update_movie in movies:
-        current_year = movies[user_update_movie]["year"]
-        print(f"The current year of {user_update_movie} is {current_year}")
-
-        while True:
-            try:
-                question_new_rating = float(input("Enter new movie rating: "))
-                break
-            except ValueError:
-                print("\033[91mInvalid input, please enter a number for the rating\033[0m")
-        while True:
-            try:
-                question_new_year = int(input(f"Enter new movie year: "))
-                break
-            except ValueError:
-                print("\033[91mInvalid input, please enter a valid year\033[0m")
-        movies[user_update_movie]['rating'] = question_new_rating
-        movies[user_update_movie]['year'] = question_new_year
-        storage.list_movies()
-        print(f"Movie {user_update_movie} successfully updated")
+        title_to_update = user_update_movie
     else:
-        print(f"Movie {user_update_movie} doesn't exist")
+        for i in movies.keys():
+            if i.lower() == user_update_movie.lower():
+                title_to_update = i
+                break
+
+    if not title_to_update:
+        print(f"Movie {user_update_movie} not found in database.")
+        return
+    current = movies[title_to_update]
+    print(f"The current year of {title_to_update} is {current['year']}, rating {current['rating']}")
+
+    while True:
+        try:
+            new_year = int(input("Enter new movie year: ").strip())
+            break
+        except ValueError:
+            print("\033[91mInvalid input, please enter a valid year\033[0m")
+
+    while True:
+        try:
+            new_rating = float(input("Enter new movie rating (0-10): ").strip())
+            if not (0.0 <= new_rating <= 10):
+                raise ValueError
+            break
+        except ValueError:
+            print("\033[91mInvalid input, enter a number between 0 and 10\033[0m")
+
+
+
+    ok = storage.update_movie(title_to_update, new_year=new_year, new_rating=new_rating)
+    if ok:
+        updated = storage.list_movies().get(title_to_update)
+        if updated:
+            print(f"Updated movie {title_to_update} with new year {updated['year']} and rating {updated['rating']}")
 
 def stats():
     """Prints statistics about the database"""
